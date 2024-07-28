@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Coefficients</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        nav li {
+            display: inline-block;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px;
+        }
+
+        nav a:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+          <ul>
+            <li><a href="/">Chia đội</a></li>
+            <li><a href="/player">Elo</a></li>
+            <li><a href="/pair">Danh sách 2</a></li>
+            <li><a href="/captains">Chia đội với Đội trưởng</a></li>
+        </ul>
+        </nav>
+      </header>
+    <table id="coefficientsTable">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Coefficient</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchCoefficients() {
+            try {
+                const response = await fetch('/sorted_coefficients');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching coefficients:', error);
+                return [];
+            }
+        }
+
+        function displayCoefficients(coefficients) {
+            const tableBody = document.querySelector('#coefficientsTable tbody');
+            tableBody.innerHTML = '';  // Clear existing content
+
+            coefficients.forEach((coeff, index) => {
+                const row = tableBody.insertRow();
+                const rankCell = row.insertCell(0);
+                const playerCell = row.insertCell(1);
+                const coeffCell = row.insertCell(2);
+
+                rankCell.textContent = index + 1;  // Rank starts from 1
+                playerCell.textContent = coeff.Player;
+                coeffCell.textContent = coeff.Coefficient.toFixed(4);  // Display 4 decimal places
+            });
+        }
+
+        async function init() {
+            const coefficients = await fetchCoefficients();
+            displayCoefficients(coefficients);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
